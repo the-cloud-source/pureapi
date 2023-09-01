@@ -28,7 +28,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"net/http"
 	"net/http/cookiejar"
 	"net/url"
@@ -37,7 +37,7 @@ import (
 )
 
 // supportedRestVersions is used to negotiate the API version to use
-var supportedRestVersions = [...]string{"1.0", "1.1", "1.2", "1.3", "1.4", "1.5", "1.6", "1.7", "1.8", "1.9", "1.10", "1.11", "1.12", "1.13", "1.14", "1.15", "1.16"}
+var supportedRestVersions = [...]string{"1.0", "1.1", "1.2", "1.3", "1.4", "1.5", "1.6", "1.7", "1.8", "1.9", "1.10", "1.11", "1.12", "1.13", "1.14", "1.15", "1.16", "1.17", "1.18", "1.19"}
 
 // Client struct represents a Pure Storage FlashArray and exposes administrative APIs.
 type Client struct {
@@ -235,7 +235,6 @@ func checkAuth(apiToken, username, password string) error {
 // data
 // The data body to be passed in the HTTP request. This will be converted to JSON,
 // then added to the request as bytes.
-//
 func (c *Client) NewRequest(method string, path string, params map[string]string, data interface{}) (*http.Request, error) {
 
 	var fpath string
@@ -286,9 +285,10 @@ func (c *Client) NewRequest(method string, path string, params map[string]string
 // req	The HTTP request object to be executed.
 // v	The data object that will be populated and returned. i.e. Volume struct
 // reestablish_session	A bool that states if the session should be reestablished prior to execution.
-//			This functionality is NOT implemented yet.  By default the Go HTTP library
-//			does not set a timeout, I need to set this implicitly.
-//			However, the array will timeout the session after 30 minutes.
+//
+//	This functionality is NOT implemented yet.  By default the Go HTTP library
+//	does not set a timeout, I need to set this implicitly.
+//	However, the array will timeout the session after 30 minutes.
 func (c *Client) Do(req *http.Request, v interface{}, reestablishSession bool) (*http.Response, error) {
 	resp, err := c.client.Do(req)
 	if err != nil {
@@ -312,9 +312,11 @@ func decodeResponse(r *http.Response, v interface{}) error {
 		return fmt.Errorf("nil interface provided to decodeResponse")
 	}
 
-	bodyBytes, _ := ioutil.ReadAll(r.Body)
-	bodyString := string(bodyBytes)
-	err := json.Unmarshal([]byte(bodyString), &v)
+	bodyBytes, e := io.ReadAll(r.Body)
+	if e != nil {
+		return e
+	}
+	err := json.Unmarshal(bodyBytes, &v)
 	return err
 }
 
@@ -327,9 +329,8 @@ func validateResponse(r *http.Response) error {
 		return nil
 	}
 
-	bodyBytes, _ := ioutil.ReadAll(r.Body)
-	bodyString := string(bodyBytes)
-	return fmt.Errorf("Response code: %d, Response Body: %s", r.StatusCode, bodyString)
+	bodyBytes, _ := io.ReadAll(r.Body)
+	return fmt.Errorf("Response code: %d, Response Body: %s", r.StatusCode, string(bodyBytes))
 }
 
 // checkRestVersion will check that the specified rest_version is supported

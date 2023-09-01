@@ -1,3 +1,3 @@
-module github.com/The-Cloud-Source/pureapi/flasharray
+module github.com/the-cloud-source/pureapi/flasharray
 
-go 1.12
+go 1.18

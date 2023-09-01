@@ -41,11 +41,11 @@ The pure1 library contains all functionality provided by version 1.0 of the Pure
 
 ### FlashArray
 ```sh
-$ go get github.com/The-Cloud-Source/pureapi/flasharray
+$ go get github.com/the-cloud-source/pureapi/flasharray
 ```
 ### Pure1
 ```sh
-$ go get github.com/The-Cloud-Source/pureapi/pure1
+$ go get github.com/the-cloud-source/pureapi/pure1
 ```
 
 # Testing
@@ -65,7 +65,7 @@ The Pure1 tests require a connection to Pure1.  They will require environment va
 # Documentation
 
 ## FlashArray
-https://godoc.org/github.com/The-Cloud-Source/pureapi/flasharray
+https://godoc.org/github.com/the-cloud-source/pureapi/flasharray
 
 ### flasharray.Client
 
@@ -73,7 +73,7 @@ Create a client to connect to the FlashArray
 ```go
 import (
 	"fmt"
-	"github.com/The-Cloud-Source/pureapi/flasharray"
+	"github.com/the-cloud-source/pureapi/flasharray"
 )
 
 client := flasharray.Client{Target: "flasharray.example.com", Username: "pureuser", Password: "password", APIToken: nil, RestVersion: nil, UserAgent: nil, RequestKwargs: nil}
@@ -121,7 +121,7 @@ for _, vol := range client.Volumes.ListVolumes(nil) {
 ```
 
 ## Pure1
-https://godoc.org/github.com/The-Cloud-Source/pureapi/pure1
+https://godoc.org/github.com/the-cloud-source/pureapi/pure1
 
 ### Authentication
 The Pure1 REST API authentication requires a public and private certificate.
@@ -152,7 +152,7 @@ Create a client to connect to Pure1
 import (
 	"fmt"
 	"os"
-	"github.com/The-Cloud-Source/pureapi/pure1"
+	"github.com/the-cloud-source/pureapi/pure1"
 )
 
 appID := os.Getenv("PURE1_APPID")
